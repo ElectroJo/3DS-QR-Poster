@@ -10,7 +10,6 @@ import humanize
 import struct
 from bs4 import BeautifulSoup
 
-
 # sweet mother of imports
 
 def get_cia_info(url):
@@ -161,17 +160,20 @@ def main():
 
                     if comment is not '':  # check if we have anything to post
                         comment += '*[3DS QR Bot](https://github.com/nwk6661/3DS-QR-Poster)*'
-                        submission.add_comment(comment)
+                        posts_scanned.append(submission.id)  # add id to list
+                        with open("posts_scanned.txt", "w") as f:  # write from posts_scanned list to the file
+                            for post_id in posts_scanned:
+                                f.write(post_id + "\n")
+                        try:
+                            submission.add_comment(comment)
+                        except Exception as Error:
+                            run_log.append("An Error Occurred While Posting: "+str(Error))
                         print(comment)
                         log = "Replied to " + submission.id + " on " + time.asctime(time.localtime(time.time()))
                         requests.put("https://api.titledb.com/v1/submission",
                                      data=json.dumps({"url": qrentry[9]}), headers=headers)  # Add to titledb
                         run_log.append(log)  # log post id and time a post was replied to
-                        posts_scanned.append(submission.id)  # add id to list
 
-    with open("posts_scanned.txt", "w") as f:  # write from posts_scanned list to the file
-        for post_id in posts_scanned:
-            f.write(post_id + "\n")
 
     with open("run_log.txt", "w") as l:  # write from the run_log to the file
         for log_entry in run_log:
