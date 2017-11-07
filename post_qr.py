@@ -170,8 +170,10 @@ def main():
                             run_log.append("An Error Occurred While Posting: "+str(Error))
                         print(comment)
                         log = "Replied to " + submission.id + " on " + time.asctime(time.localtime(time.time()))
-                        requests.put("https://api.titledb.com/v1/submission",
-                                     data=json.dumps({"url": qrentry[9]}), headers=headers)  # Add to titledb
+                        try:
+                            requests.put("https://api.titledb.com/v1/submission",data=json.dumps({"url": qrentry[9]}), headers=headers)  # Add to titledb
+                        except Exception as Error:
+                            run_log.append("An Error Occurred While Adding the CIA to TitleDB: "+str(Error))
                         run_log.append(log)  # log post id and time a post was replied to
 
 
